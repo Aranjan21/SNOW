@@ -8,8 +8,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lunera.response.ServiceNowResponse;
 //import com.lunera.db.rds.connection.ServiceNowDAO;
 import com.lunera.service.ServiceNow;
 
@@ -26,11 +28,17 @@ public class ServiceNowController {
 	@Autowired
 	private ServiceNow serviceNow;
 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST, value = "/luneraapp", consumes = {
 			MediaType.APPLICATION_FORM_URLENCODED_VALUE })
-	public void webhook(@RequestBody MultiValueMap<String, String> requestData) {
+	public ServiceNowResponse webhook(@RequestBody MultiValueMap<String, String> requestData) {
 		logger.info("Request received from Lamp [/particlehook/luneraapp] : " + requestData);
-		serviceNow.processServiceNowRequest(requestData);
-		logger.info("Request completed from Lamp [/particlehook/luneraapp] : " + requestData);
+		return serviceNow.processServiceNowRequest(requestData);
 	}
+	
+	@ResponseBody
+    @RequestMapping(value = "/healthcheck", method = RequestMethod.GET)
+    public String healthCheck() {
+        return "ok";
+    }
 }

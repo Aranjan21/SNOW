@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -27,19 +26,15 @@ import com.lunera.util.enums.ApplicationConstants;
  */
 @EnableAsync
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.lunera.db.rds", "com.lunera.service", "com.lunera.controller",
-		"com.lunera.db.config", "com.lunera.util.cache" })
+@ComponentScan(basePackages = { "com.lunera.db", "com.lunera.service", "com.lunera.controller",
+		"com.lunera.config", "com.lunera.util.cache" })
 public class Application {
 
 	private final static Logger logger = LogManager.getLogger(Application.class);
 
 	public static void main(String[] args) {
 		loadLuneraPropertyFile();
-		// SpringApplication.run(Application.class, args);
 		SpringApplication application = new SpringApplication(Application.class);
-		HashMap<String, Object> defaultProperties = new HashMap<>();
-		defaultProperties.put("server.port", 6001);
-		application.setDefaultProperties(defaultProperties);
 		application.run(args);
 	}
 

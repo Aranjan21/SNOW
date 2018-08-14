@@ -9,4 +9,5 @@ public class ApplicationConstants {
 	public static final Path DEFAULT_PROPERTIES_LOCATION = Paths.get(File.separatorChar + "lunera", "etc",
 			"lunera.properties");
 	public static final String ENVIRONMENT_VARIABLE = "LUN_CONFIG";
+	public static final String SERVER_PORT1 = "6001";
 }
