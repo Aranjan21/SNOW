@@ -3,7 +3,7 @@ package com.lunera.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lunera.dto.SummarizeData;
+import com.lunera.dto.ServiceNowSummarizeData;
 
 import lombok.Data;
 
@@ -13,5 +13,5 @@ import lombok.Data;
  */
 @Data
 public class SummarizeDataResponse {
-	private List<SummarizeData> summaryData = new ArrayList<SummarizeData>();
+	private List<ServiceNowSummarizeData> summaryData = new ArrayList<ServiceNowSummarizeData>();
 }

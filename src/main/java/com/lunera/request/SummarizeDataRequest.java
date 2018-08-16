@@ -1,5 +1,8 @@
 package com.lunera.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.lunera.util.enums.TimePeriod;
+
 import lombok.Data;
 
 /**
@@ -11,5 +14,6 @@ public class SummarizeDataRequest {
 	private String buildingId;
 	private String from;
 	private String to;
-	private String period;
+	@JsonDeserialize
+	private TimePeriod period;
 }

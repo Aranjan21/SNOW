@@ -50,25 +50,23 @@ public class CassandraConfig {
 		+ "primary key(buildingId,buttonId,timestamp))"
 		+ "with clustering order by(buttonId desc,timestamp desc)");
 		
-		/*
-		session.execute("create table if not exists service_now_hour (" 
-		+ "buildingId text,"
-		+ "buttonId int,"
-		+ "serviceType int," 
-		+ "timestamp timestamp," 
-		+ "primary key(buildingId,buttonId,serviceType))"
-		+ "with clustering order by(buttonId asc, serviceType asc)");
 		
-		session.execute("create table if not exists service_now_day (" 
+		session.execute("create table if not exists service_now_summary_hour (" 
 		+ "buildingId text,"
-		+ "buttonId int,"
-		+ "serviceType int,"
-		+ "transId int,"
-		+ "fromDate timestamp,"
-		+ "toDate timestamp,"
-		+ "count int,"
-		+ "primary key(buildingId, buttonId, serviceType))"
-		+ "with clustering order by(buttonId asc, serviceType asc)");
-		*/
+		+ "totalHappy int,"
+		+ "totoalSad int," 
+		+ "totoalService int," 
+		+ "timestamp timestamp," 
+		+ "primary key(buildingId,timestamp))"
+		+ "with clustering order by(timestamp desc)");
+		
+		session.execute("create table if not exists service_now_summary_day (" 
+		+ "buildingId text,"
+		+ "totalHappy int,"
+		+ "totoalSad int," 
+		+ "totoalService int," 
+		+ "timestamp timestamp," 
+		+ "primary key(buildingId,timestamp))"
+		+ "with clustering order by(timestamp desc)");
 	}
 }
