@@ -27,7 +27,7 @@ public class CassandraConfig {
 
 	@Bean
 	public Session getSession() {
-		String[] cassandraHost = new String[] { host };
+		String[] cassandraHost = host.split(",");
 		Cluster cluster = Cluster.builder().addContactPoints(cassandraHost).withPort(port).withClusterName(clusterName)
 				.build();
 		Session session = cluster.connect();
