@@ -47,16 +47,15 @@ public class CassandraConfig {
 		+ "serviceType int,"
 		+ "transId int,"
 		+ "timestamp timestamp,"
-		+ "primary key(buildingId,buttonId,serviceType,transId))"
-		+ "with clustering order by(buttonId asc, serviceType asc, transId asc)");;
+		+ "primary key(buildingId,buttonId,timestamp))"
+		+ "with clustering order by(buttonId desc,timestamp desc)");
 		
+		/*
 		session.execute("create table if not exists service_now_hour (" 
 		+ "buildingId text,"
 		+ "buttonId int,"
 		+ "serviceType int," 
-		+ "transId int," 
-		+ "fromDate timestamp," 
-		+ "toDate timestamp,"
+		+ "timestamp timestamp," 
 		+ "primary key(buildingId,buttonId,serviceType))"
 		+ "with clustering order by(buttonId asc, serviceType asc)");
 		
@@ -70,5 +69,6 @@ public class CassandraConfig {
 		+ "count int,"
 		+ "primary key(buildingId, buttonId, serviceType))"
 		+ "with clustering order by(buttonId asc, serviceType asc)");
+		*/
 	}
 }
