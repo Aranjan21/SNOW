@@ -35,7 +35,7 @@ public class ServiceNowImpl implements ServiceNow {
 
 	@Autowired
 	private ServiceNowCache serviceNowCache;
-	
+
 	@Autowired
 	private CassandraDAO cassandraDAO;
 
@@ -50,14 +50,13 @@ public class ServiceNowImpl implements ServiceNow {
 			cacheValue.setTimeStamp(publishTime);
 			serviceNowCache.put(cacheKey, cacheValue);
 			updateServiceNowCount(data);
-			cassandraDAO.saveServiceNowData(data);
+
 		} else if (cacheValue.getTimeStamp()
 				.isBefore(DateTime.now().minusMinutes(ApplicationConstants.MAX_DUPLICATE_MSG_INTERVAL_MINUTES))) {
 			logger.info("Last Published Time :" + cacheValue.getTimeStamp() + " Current Time: " + DateTime.now());
 			cacheValue.setTimeStamp(publishTime);
 			serviceNowCache.put(cacheKey, cacheValue);
 			updateServiceNowCount(data);
-			cassandraDAO.saveServiceNowData(data);
 		} else {
 			logger.info("Last Published Time :" + cacheValue.getTimeStamp() + " Current Time: " + DateTime.now());
 			logger.info("Duplicate serviceNow event received" + cacheKey);
@@ -78,7 +77,7 @@ public class ServiceNowImpl implements ServiceNow {
 		// If already updated then ignore else update count
 		if (!rds.isServiceCountAlreadyUpdated(data)) {
 			rds.updateServiceNowCount(data);
-			// Need to update cassandra raw table
+			cassandraDAO.saveServiceNowData(data);
 		}
 	}
 

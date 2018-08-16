@@ -3,13 +3,15 @@ package com.lunera.db.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTimeZone;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.lunera.config.CassandraManager;
+import com.lunera.controller.ServiceNowController;
 import com.lunera.dto.ServiceNowData;
 import com.lunera.dto.ServiceNowSummarizeData;
 import com.lunera.request.RawDataRequest;
@@ -18,6 +20,8 @@ import com.lunera.response.ServiceNowRawData;
 
 @Service
 public class CassandraDAOImpl implements CassandraDAO {
+
+	private final static Logger logger = LogManager.getLogger(ServiceNowController.class);
 
 	@Autowired
 	private CassandraManager cassandraManager;
@@ -28,8 +32,23 @@ public class CassandraDAOImpl implements CassandraDAO {
 				+ data.getBuildingid() + "'," + data.getDeviceId() + "," + data.getType() + ",'"
 				+ data.getPublished_at() + "'," + data.getTransID() + ")";
 		cassandraManager.executeSynchronously(query);
+		logger.info("Service now data saved to cassandra database:" + query);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
+	// Need more work on these queries
 	public List<ServiceNowSummarizeData> getHourlyServiceNowSummaryData(SummarizeDataRequest request) {
 		List<ServiceNowSummarizeData> responseList = new ArrayList<ServiceNowSummarizeData>();
 		String query = "select * from service_now_summary_hour where " + "buildingId = '" + request.getBuildingId()
