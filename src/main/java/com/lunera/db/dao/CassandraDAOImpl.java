@@ -18,6 +18,7 @@ import com.lunera.dto.ServiceNowSummarizeData;
 import com.lunera.request.RawDataRequest;
 import com.lunera.request.SummarizeDataRequest;
 import com.lunera.response.ServiceNowRawData;
+import com.lunera.util.enums.ApplicationConstants;
 
 @Service
 public class CassandraDAOImpl implements CassandraDAO {
@@ -36,24 +37,6 @@ public class CassandraDAOImpl implements CassandraDAO {
 		logger.info("Service now data saved to cassandra database:" + query);
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// Need more work on these queries
 	public List<ServiceNowSummarizeData> getHourlyServiceNowSummaryData(SummarizeDataRequest request) {
 		List<ServiceNowSummarizeData> responseList = new ArrayList<ServiceNowSummarizeData>();
@@ -85,26 +68,9 @@ public class CassandraDAOImpl implements CassandraDAO {
 		return responseList;
 	}
 
-	public ServiceNowSummarizeData getSummaryData(Row row) {
-		ServiceNowSummarizeData data = new ServiceNowSummarizeData();
-		data.setBuildingId(row.getString("buildingId"));
-		data.setTotalHappy(row.getInt("totalHappy"));
-		data.setTotalSad(row.getInt("totalSad"));
-		data.setTotalService(row.getInt("totalService"));
-		data.setTimestamp(row.getString("timestamp"));
-		return data;
-	}
-
-	public List<ServiceNowRawData> getHourlyServiceNowRawData(RawDataRequest request) {
+	public List<ServiceNowRawData> getServiceNowRawData(RawDataRequest request) {
 		String query = "select * from service_now where " + "buildingId = '" + request.getBuildingId() + "' "
-				+ "and timestamp >= '" + request.getFrom() + "' " + "and timestamp < '" + request.getTo() + "';";
-		return null;
-
-	}
-
-	public List<ServiceNowRawData> getDailyServiceNowRawData(RawDataRequest request) {
-		String query = "select * from service_now where " + "buildingId = '" + request.getBuildingId() + "' "
-				+ "and timestamp >= '" + request.getFrom() + "' " + "and timestamp < '" + request.getTo() + "';";
+				+ "and timestamp >= '" + request.getFrom() + "' " + "and timestamp <= '" + request.getTo() + "';";
 		List<ServiceNowRawData> rawDataList = new ArrayList<ServiceNowRawData>();
 		ResultSet rs = cassandraManager.executeSynchronously(query);
 		if (rs != null) {
@@ -114,7 +80,6 @@ public class CassandraDAOImpl implements CassandraDAO {
 				row = rs.one();
 			}
 		}
-
 		return rawDataList;
 	}
 
@@ -124,7 +89,18 @@ public class CassandraDAOImpl implements CassandraDAO {
 		data.setButtonId(row.getString("buttonId"));
 		data.setServiceType(row.getInt("serviceType"));
 		Date date = row.getTimestamp("timestamp");
-		data.setPublishedDate(date.toString());
+		data.setPublishedDate(ApplicationConstants.df.format(date));
+		return data;
+	}
+
+	public ServiceNowSummarizeData getSummaryData(Row row) {
+		ServiceNowSummarizeData data = new ServiceNowSummarizeData();
+		data.setBuildingId(row.getString("buildingId"));
+		data.setTotalHappy(row.getInt("totalHappy"));
+		data.setTotalSad(row.getInt("totalSad"));
+		data.setTotalService(row.getInt("totalService"));
+		Date date = row.getTimestamp("timestamp");
+		data.setTimestamp(ApplicationConstants.df.format(date));
 		return data;
 	}
 }

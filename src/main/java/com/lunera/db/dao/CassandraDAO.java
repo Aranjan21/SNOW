@@ -12,10 +12,8 @@ public interface CassandraDAO {
 	public void saveServiceNowData(ServiceNowData data);
 
 	public List<ServiceNowSummarizeData> getHourlyServiceNowSummaryData(SummarizeDataRequest request);
-
-	public List<ServiceNowRawData> getHourlyServiceNowRawData(RawDataRequest request);
-
+	
 	public List<ServiceNowSummarizeData> getDailyServiceNowSummaryData(SummarizeDataRequest request);
 
-	public List<ServiceNowRawData> getDailyServiceNowRawData(RawDataRequest request);
+	public List<ServiceNowRawData> getServiceNowRawData(RawDataRequest request);
 }

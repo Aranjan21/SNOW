@@ -46,16 +46,7 @@ public class ControlCenterServiceImpl implements ControlCenterService {
 	public RawDataResponse getRawData(RawDataRequest rawDataRequest) {
 		RawDataResponse rawDataResponse = new RawDataResponse();
 		List<ServiceNowRawData> rawDataList = new ArrayList<ServiceNowRawData>();
-		switch (rawDataRequest.getPeriod()) {
-		case daily:
-			rawDataList = cassandraDAO.getDailyServiceNowRawData(rawDataRequest);
-			break;
-		case hour:
-			rawDataList = cassandraDAO.getHourlyServiceNowRawData(rawDataRequest);
-			break;
-		default:
-
-		}
+		rawDataList = cassandraDAO.getServiceNowRawData(rawDataRequest);
 		rawDataResponse.setRawData(rawDataList);
 		return rawDataResponse;
 	}
