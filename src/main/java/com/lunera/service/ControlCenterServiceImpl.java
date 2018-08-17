@@ -3,6 +3,8 @@ package com.lunera.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ public class ControlCenterServiceImpl implements ControlCenterService {
 	@Autowired
 	private CassandraDAO cassandraDAO;
 
+	private final static Logger logger = LogManager.getLogger(ControlCenterServiceImpl.class);
+	
 	@Override
 	public SummarizeDataResponse getSummaryData(SummarizeDataRequest summaryDataRequest) {
 		SummarizeDataResponse response = new SummarizeDataResponse();
@@ -36,7 +40,7 @@ public class ControlCenterServiceImpl implements ControlCenterService {
 			summaryDataList = cassandraDAO.getHourlyServiceNowSummaryData(summaryDataRequest);
 			break;
 		default:
-
+			logger.info("Invalid period: Supported Only [daily/hour]");
 		}
 		response.setSummaryData(summaryDataList);
 		return response;

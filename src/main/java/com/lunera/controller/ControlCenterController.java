@@ -2,6 +2,8 @@ package com.lunera.controller;
 
 import java.io.IOException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,19 +27,21 @@ import com.lunera.service.ControlCenterService;
 @RequestMapping("/api/v1/serviceNow")
 public class ControlCenterController {
 
+	private final static Logger logger = LogManager.getLogger(ControlCenterController.class);
+
 	@Autowired
 	private ControlCenterService controlCenterService;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/summarize", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<SummarizeDataResponse> getSummarizeData(@RequestBody SummarizeDataRequest summaryDataRequest)
 			throws IOException {
-		System.out.println("Summarize data request :" + summaryDataRequest);
+		logger.info("Summarize data request :" + summaryDataRequest);
 		return ResponseEntity.status(HttpStatus.OK).body(controlCenterService.getSummaryData(summaryDataRequest));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/details", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<RawDataResponse> getRawData(@RequestBody RawDataRequest rawDataRequest) {
-		System.out.println("Raw Data Request:" + rawDataRequest);
+		logger.info("Raw Data Request:" + rawDataRequest);
 		return ResponseEntity.status(HttpStatus.OK).body(controlCenterService.getRawData(rawDataRequest));
 	}
 }

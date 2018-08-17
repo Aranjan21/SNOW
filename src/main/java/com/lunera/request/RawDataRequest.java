@@ -1,7 +1,5 @@
 package com.lunera.request;
 
-import com.lunera.util.enums.TimePeriod;
-
 import lombok.Data;
 
 /**

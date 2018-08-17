@@ -42,6 +42,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 		List<ServiceNowSummarizeData> responseList = new ArrayList<ServiceNowSummarizeData>();
 		String query = "select * from service_now_summary_hour where " + "buildingId = '" + request.getBuildingId()
 				+ "' " + "and timestamp > '" + request.getFrom() + "' " + "and timestamp <= '" + request.getTo() + "';";
+		logger.info("Fetch Hourly Service Summary Data query : " + query);
 		ResultSet rs = cassandraManager.executeSynchronously(query);
 		if (rs != null) {
 			Row row = rs.one();
@@ -50,6 +51,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 				row = rs.one();
 			}
 		}
+		logger.info("Fetch Hourly Service Summary Data response : " + responseList);
 		return responseList;
 	}
 
@@ -57,6 +59,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 		List<ServiceNowSummarizeData> responseList = new ArrayList<ServiceNowSummarizeData>();
 		String query = "select * from service_now_summary_day where " + "buildingId = '" + request.getBuildingId()
 				+ "' " + "and timestamp > '" + request.getFrom() + "' " + "and timestamp <= '" + request.getTo() + "';";
+		logger.info("Fetch Daily Service Summary Data query : " + query);
 		ResultSet rs = cassandraManager.executeSynchronously(query);
 		if (rs != null) {
 			Row row = rs.one();
@@ -65,6 +68,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 				row = rs.one();
 			}
 		}
+		logger.info("Fetch Daily Service Summary Data response : " + responseList);
 		return responseList;
 	}
 
@@ -72,6 +76,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 		String query = "select * from service_now where " + "buildingId = '" + request.getBuildingId() + "' "
 				+ "and timestamp >= '" + request.getFrom() + "' " + "and timestamp <= '" + request.getTo() + "';";
 		List<ServiceNowRawData> rawDataList = new ArrayList<ServiceNowRawData>();
+		logger.info("Fetch Raw data query : " + query);
 		ResultSet rs = cassandraManager.executeSynchronously(query);
 		if (rs != null) {
 			Row row = rs.one();
@@ -80,6 +85,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 				row = rs.one();
 			}
 		}
+		logger.info("Fetch Raw data response:" + rawDataList);
 		return rawDataList;
 	}
 
