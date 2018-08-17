@@ -37,7 +37,6 @@ public class CassandraDAOImpl implements CassandraDAO {
 		logger.info("Service now data saved to cassandra database:" + query);
 	}
 
-	// Need more work on these queries
 	public List<ServiceNowSummarizeData> getHourlyServiceNowSummaryData(SummarizeDataRequest request) {
 		List<ServiceNowSummarizeData> responseList = new ArrayList<ServiceNowSummarizeData>();
 		String query = "select * from service_now_summary_hour where " + "buildingId = '" + request.getBuildingId()

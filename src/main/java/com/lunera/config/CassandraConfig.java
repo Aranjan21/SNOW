@@ -10,19 +10,25 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.lunera.Application;
 
+/**
+ * This class defines all DB configuration of cassandra and also initiate
+ * session object.
+ * 
+ * @author gautam.vijay
+ *
+ */
 @Configuration
 public class CassandraConfig {
 
 	@Value("${data.api.db.host}")
 	private String host;
-	
+
 	@Value("${data.api.db.port}")
 	private int port;
-	
+
 	@Value("${data.api.db.name}")
 	private String clusterName;
 
-	
 	private final static Logger logger = LogManager.getLogger(Application.class);
 
 	@Bean
@@ -35,38 +41,28 @@ public class CassandraConfig {
 		return session;
 	}
 
+	/**
+	 * This method creates key space & tables first time if not created.
+	 * 
+	 * @param session
+	 */
 	private void createkeyspacesAndTables(Session session) {
 		logger.info("Creating Keyspaces & Tables if not exist....");
 		session.execute("CREATE KEYSPACE if not exists " + clusterName
 				+ " WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 1 };");
 		session.execute("use " + clusterName);
 
-		session.execute("create table if not exists service_now ("
-		+ "buildingId text,"
-		+ "buttonId text,"
-		+ "serviceType int,"
-		+ "transId int,"
-		+ "timestamp timestamp,"
-		+ "primary key(buildingId,timestamp,buttonId))"
-		+ "with clustering order by(timestamp desc, buttonId desc)");
-		
-		
-		session.execute("create table if not exists service_now_summary_hour (" 
-		+ "buildingId text,"
-		+ "totalHappy int,"
-		+ "totoalSad int," 
-		+ "totoalService int," 
-		+ "timestamp timestamp," 
-		+ "primary key(buildingId,timestamp))"
-		+ "with clustering order by(timestamp desc)");
-		
-		session.execute("create table if not exists service_now_summary_day (" 
-		+ "buildingId text,"
-		+ "totalHappy int,"
-		+ "totoalSad int," 
-		+ "totoalService int," 
-		+ "timestamp timestamp," 
-		+ "primary key(buildingId,timestamp))"
-		+ "with clustering order by(timestamp desc)");
+		session.execute(
+				"create table if not exists service_now (" + "buildingId text," + "buttonId text," + "serviceType int,"
+						+ "transId int," + "timestamp timestamp," + "primary key(buildingId,timestamp,buttonId))"
+						+ "with clustering order by(timestamp desc, buttonId desc)");
+
+		session.execute("create table if not exists service_now_summary_hour (" + "buildingId text," + "totalHappy int,"
+				+ "totoalSad int," + "totoalService int," + "timestamp timestamp,"
+				+ "primary key(buildingId,timestamp))" + "with clustering order by(timestamp desc)");
+
+		session.execute("create table if not exists service_now_summary_day (" + "buildingId text," + "totalHappy int,"
+				+ "totoalSad int," + "totoalService int," + "timestamp timestamp,"
+				+ "primary key(buildingId,timestamp))" + "with clustering order by(timestamp desc)");
 	}
 }

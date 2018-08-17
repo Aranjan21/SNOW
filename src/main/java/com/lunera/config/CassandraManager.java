@@ -13,6 +13,12 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.ResultSetFuture;
 import com.datastax.driver.core.Session;
 
+/**
+ * This class contains query execution method of cassandra.
+ * 
+ * @author gautam.vijay
+ *
+ */
 @Component
 public class CassandraManager {
 
@@ -23,6 +29,12 @@ public class CassandraManager {
 
 	private final static Logger logger = LogManager.getLogger(CassandraManager.class);
 
+	/**
+	 * This method executes queries with in time limit of 3second
+	 * 
+	 * @param query
+	 * @return ResultSet
+	 */
 	public ResultSet executeSynchronously(String query) {
 		ResultSetFuture future = this.session.executeAsync(query);
 		logger.debug(query);

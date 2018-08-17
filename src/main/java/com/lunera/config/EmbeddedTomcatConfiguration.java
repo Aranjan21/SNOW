@@ -10,12 +10,16 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+/**
+ * 
+ * @author gautam.vijay
+ *
+ */
 @Configuration
 public class EmbeddedTomcatConfiguration {
 
 	@Value("${servicenow.cc.api.port}")
-	private String additionalPorts;// = ApplicationConstants.SERVER_PORT2;
+	private String additionalPorts;
 
 	@Value("server.port}")
 	private String serverPort;
