@@ -99,22 +99,25 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 	}
 
 	@Override
-	public void updateServiceNowCount(ServiceNowData data) {
+	public boolean updateServiceNowCount(ServiceNowData data) {
 		PreparedStatement ps = null;
 		// Hexa to decimal
 		int deviceId = Integer.parseInt(data.getDeviceId(), 16);
 		try {
-			String sql = "UPDATE ServiceNowButtons SET TransId = ?, PressedCount = PressedCount + 1 WHERE Tenant_Id = ? AND ButtonId = ? AND Type = ?";
+			String sql = "UPDATE ServiceNowButtons SET TransId = ? , PressedCount = PressedCount + 1 WHERE Tenant_Id = ? AND ButtonId = ? AND Type = ? AND TransId != ? ";
 			ps = dbConnection.getConnection().prepareStatement(sql);
 			ps.setString(1, data.getTransID());
 			ps.setString(2, data.getTenantid());
 			ps.setInt(3, deviceId);
 			ps.setString(4, data.getType());
+			ps.setString(5, data.getTransID());
 			logger.info("Executing query " + sql);
 			int updateStatus = ps.executeUpdate();
 			if (updateStatus > 0) {
 				logger.info("ServiceNow Button Count has been updated");
+				return true;
 			}
+			logger.info("This Service Now Request is already updated into database.");
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
 		} finally {
@@ -127,5 +130,6 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 				}
 			}
 		}
+		return false;
 	}
 }

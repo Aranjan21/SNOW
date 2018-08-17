@@ -75,8 +75,8 @@ public class ServiceNowImpl implements ServiceNow {
 	private void updateServiceNowCount(ServiceNowData data) {
 		// First Check that data already updated or not(tenantId, transID,buttonId,type)
 		// If already updated then ignore else update count
-		if (!rds.isServiceCountAlreadyUpdated(data)) {
-			rds.updateServiceNowCount(data);
+		// if (!rds.isServiceCountAlreadyUpdated(data)) {
+		if (rds.updateServiceNowCount(data)) {
 			cassandraDAO.saveServiceNowData(data);
 		}
 	}

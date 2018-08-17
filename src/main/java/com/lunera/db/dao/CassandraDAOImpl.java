@@ -1,6 +1,7 @@
 package com.lunera.db.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.LogManager;
@@ -29,25 +30,30 @@ public class CassandraDAOImpl implements CassandraDAO {
 	@Override
 	public void saveServiceNowData(ServiceNowData data) {
 		String query = "insert into service_now (buildingid,buttonid,servicetype,timestamp,transid)" + " values('"
-				+ data.getBuildingid() + "'," + data.getDeviceId() + "," + data.getType() + ",'"
+				+ data.getBuildingid() + "','" + data.getDeviceId() + "'," + data.getType() + ",'"
 				+ data.getPublished_at() + "'," + data.getTransID() + ")";
 		cassandraManager.executeSynchronously(query);
 		logger.info("Service now data saved to cassandra database:" + query);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// Need more work on these queries
 	public List<ServiceNowSummarizeData> getHourlyServiceNowSummaryData(SummarizeDataRequest request) {
 		List<ServiceNowSummarizeData> responseList = new ArrayList<ServiceNowSummarizeData>();
@@ -99,8 +105,26 @@ public class CassandraDAOImpl implements CassandraDAO {
 	public List<ServiceNowRawData> getDailyServiceNowRawData(RawDataRequest request) {
 		String query = "select * from service_now where " + "buildingId = '" + request.getBuildingId() + "' "
 				+ "and timestamp >= '" + request.getFrom() + "' " + "and timestamp < '" + request.getTo() + "';";
-		return null;
+		List<ServiceNowRawData> rawDataList = new ArrayList<ServiceNowRawData>();
+		ResultSet rs = cassandraManager.executeSynchronously(query);
+		if (rs != null) {
+			Row row = rs.one();
+			while (row != null) {
+				rawDataList.add(getRawData(row));
+				row = rs.one();
+			}
+		}
 
+		return rawDataList;
 	}
 
+	public ServiceNowRawData getRawData(Row row) {
+		ServiceNowRawData data = new ServiceNowRawData();
+		data.setBuildingId(row.getString("buildingId"));
+		data.setButtonId(row.getString("buttonId"));
+		data.setServiceType(row.getInt("serviceType"));
+		Date date = row.getTimestamp("timestamp");
+		data.setPublishedDate(date.toString());
+		return data;
+	}
 }

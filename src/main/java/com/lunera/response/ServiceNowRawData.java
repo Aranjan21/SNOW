@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class ServiceNowRawData {
-	private String uuid;
+	private String buildingId;
 	private String buttonId;
 	private String publishedDate;
-	private String servicedDate;
+	private int serviceType;
+	private String servicedDate;// related to third service
 }

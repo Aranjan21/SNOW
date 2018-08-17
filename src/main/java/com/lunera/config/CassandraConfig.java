@@ -43,12 +43,12 @@ public class CassandraConfig {
 
 		session.execute("create table if not exists service_now ("
 		+ "buildingId text,"
-		+ "buttonId int,"
+		+ "buttonId text,"
 		+ "serviceType int,"
 		+ "transId int,"
 		+ "timestamp timestamp,"
-		+ "primary key(buildingId,buttonId,timestamp))"
-		+ "with clustering order by(buttonId desc,timestamp desc)");
+		+ "primary key(buildingId,timestamp,buttonId))"
+		+ "with clustering order by(timestamp desc, buttonId desc)");
 		
 		
 		session.execute("create table if not exists service_now_summary_hour (" 

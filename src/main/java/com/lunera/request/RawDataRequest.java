@@ -1,7 +1,5 @@
 package com.lunera.request;
 
-import org.joda.time.DateTime;
-
 import com.lunera.util.enums.TimePeriod;
 
 import lombok.Data;
@@ -13,7 +11,7 @@ import lombok.Data;
 @Data
 public class RawDataRequest {
 	private String buildingId;
-	private DateTime from;
-	private DateTime to;
+	private String from;
+	private String to;
 	private TimePeriod period;
 }

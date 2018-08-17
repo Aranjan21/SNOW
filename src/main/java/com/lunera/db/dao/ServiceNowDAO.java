@@ -12,7 +12,7 @@ public interface ServiceNowDAO {
 
 	public boolean isServiceCountAlreadyUpdated(ServiceNowData data);
 
-	public void updateServiceNowCount(ServiceNowData data);
+	public boolean updateServiceNowCount(ServiceNowData data);
 
 	public void closeResources(ResultSet rs, Statement stmt);
 }
