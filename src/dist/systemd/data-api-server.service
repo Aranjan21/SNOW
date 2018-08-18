@@ -1,0 +1,18 @@
+[Unit]
+Description=Service Now Server
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/lunera/code/service-now/systemd-service-now.pid
+Environment=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+User=lundaemons
+Group=lundaemons
+SyslogIdentifier=lunera-service-now
+WorkingDirectory=/lunera/data/service-now
+ExecStart=/lunera/code/service-now/current/bin/data-api-server
+Restart=always
+RestartSec=100
+
+[Install]
+WantedBy=multi-user.target
