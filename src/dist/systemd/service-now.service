@@ -1,5 +1,5 @@
 [Unit]
-Description=Service Now Server
+Description=Service Now
 After=network.target
 
 [Service]
@@ -10,7 +10,7 @@ User=lundaemons
 Group=lundaemons
 SyslogIdentifier=lunera-service-now
 WorkingDirectory=/lunera/data/service-now
-ExecStart=/lunera/code/service-now/current/bin/data-api-server
+ExecStart=/lunera/code/service-now/current/bin/service-now
 Restart=always
 RestartSec=100
 
