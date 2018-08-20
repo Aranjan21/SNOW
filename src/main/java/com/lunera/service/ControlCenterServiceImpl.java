@@ -33,10 +33,10 @@ public class ControlCenterServiceImpl implements ControlCenterService {
 		SummarizeDataResponse response = new SummarizeDataResponse();
 		List<ServiceNowSummarizeData> summaryDataList = null;
 		switch (summaryDataRequest.getPeriod()) {
-		case daily:
+		case Daily:
 			summaryDataList = cassandraDAO.getDailyServiceNowSummaryData(summaryDataRequest);
 			break;
-		case hour:
+		case Hourly:
 			summaryDataList = cassandraDAO.getHourlyServiceNowSummaryData(summaryDataRequest);
 			break;
 		default:

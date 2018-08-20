@@ -11,5 +11,5 @@ public class ApplicationConstants {
 	public static final Path DEFAULT_PROPERTIES_LOCATION = Paths.get(File.separatorChar + "lunera", "etc",
 			"lunera.properties");
 	public static final String ENVIRONMENT_VARIABLE = "LUN_CONFIG";
-	public static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
+	public static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 }

@@ -105,7 +105,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 		data.setTotalSad(row.getInt("totalSad"));
 		data.setTotalService(row.getInt("totalService"));
 		Date date = row.getTimestamp("timestamp");
-		data.setTimestamp(ApplicationConstants.df.format(date));
+		data.setEndDate(ApplicationConstants.df.format(date));
 		return data;
 	}
 }
