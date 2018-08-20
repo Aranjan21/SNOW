@@ -1,6 +1,7 @@
 package com.lunera.db.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.lunera.request.RawDataRequest;
 import com.lunera.request.SummarizeDataRequest;
 import com.lunera.response.ServiceNowRawData;
 import com.lunera.util.enums.ApplicationConstants;
+import com.lunera.util.enums.TimePeriod;
 
 @Service
 public class CassandraDAOImpl implements CassandraDAO {
@@ -46,7 +48,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 		if (rs != null) {
 			Row row = rs.one();
 			while (row != null) {
-				responseList.add(getSummaryData(row));
+				responseList.add(getSummaryData(row, request.getPeriod()));
 				row = rs.one();
 			}
 		}
@@ -63,7 +65,7 @@ public class CassandraDAOImpl implements CassandraDAO {
 		if (rs != null) {
 			Row row = rs.one();
 			while (row != null) {
-				responseList.add(getSummaryData(row));
+				responseList.add(getSummaryData(row, request.getPeriod()));
 				row = rs.one();
 			}
 		}
@@ -98,14 +100,29 @@ public class CassandraDAOImpl implements CassandraDAO {
 		return data;
 	}
 
-	public ServiceNowSummarizeData getSummaryData(Row row) {
+	public ServiceNowSummarizeData getSummaryData(Row row, TimePeriod period) {
 		ServiceNowSummarizeData data = new ServiceNowSummarizeData();
 		data.setBuildingId(row.getString("buildingId"));
 		data.setTotalHappy(row.getInt("totalHappy"));
 		data.setTotalSad(row.getInt("totalSad"));
 		data.setTotalService(row.getInt("totalService"));
-		Date date = row.getTimestamp("timestamp");
-		data.setEndDate(ApplicationConstants.df.format(date));
+		Date enddate = row.getTimestamp("timestamp");
+		data.setEndDate(ApplicationConstants.df.format(enddate));
+		Calendar cal = Calendar.getInstance();
+		// remove next line if you're always using the current time.
+		cal.setTime(enddate);
+		switch (period) {
+		case Hourly:
+			cal.add(Calendar.HOUR, -1);
+			break;
+		case Daily:
+			cal.add(Calendar.DATE, -1);
+			break;
+		default:
+			cal.add(Calendar.HOUR, -1);
+		}
+		Date startDate = cal.getTime();
+		data.setStartDate(ApplicationConstants.df.format(startDate));
 		return data;
 	}
 }
