@@ -58,11 +58,11 @@ public class CassandraConfig {
 						+ "with clustering order by(timestamp desc, buttonId desc)");
 
 		session.execute("create table if not exists service_now_summary_hour (" + "buildingId text," + "totalHappy int,"
-				+ "totoalSad int," + "totoalService int," + "timestamp timestamp,"
+				+ "totalSad int," + "totalService int," + "timestamp timestamp,"
 				+ "primary key(buildingId,timestamp))" + "with clustering order by(timestamp desc)");
 
 		session.execute("create table if not exists service_now_summary_day (" + "buildingId text," + "totalHappy int,"
-				+ "totoalSad int," + "totoalService int," + "timestamp timestamp,"
+				+ "totalSad int," + "totalService int," + "timestamp timestamp,"
 				+ "primary key(buildingId,timestamp))" + "with clustering order by(timestamp desc)");
 	}
 }
