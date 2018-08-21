@@ -8,10 +8,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServiceNowDailyReducer {
-	private final static Logger logger = LogManager.getLogger(ServiceNowDailyReducer.class);
+public class ServiceNowDataReducer {
 
-	@Scheduled(cron = "0 0 0 * * ?")
+	private final static Logger logger = LogManager.getLogger(ServiceNowDataReducer.class);
+
+	@Scheduled(cron = "0 0 * * * ?")
 	public void startReducer() {
 		logger.info("Execution started: " + new Date());
 		
