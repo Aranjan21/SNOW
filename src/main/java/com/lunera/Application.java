@@ -26,7 +26,7 @@ import com.lunera.util.enums.ApplicationConstants;
 @EnableAsync
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.lunera.db", "com.lunera.service", "com.lunera.controller", "com.lunera.config",
-		"com.lunera.util.cache" })
+		"com.lunera.util.cache","com.lunera.util" })
 public class Application {
 
 	private final static Logger logger = LogManager.getLogger(Application.class);

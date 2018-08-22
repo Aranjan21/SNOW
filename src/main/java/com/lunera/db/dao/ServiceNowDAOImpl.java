@@ -4,7 +4,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.LogManager;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lunera.config.RdsConnection;
+import com.lunera.dto.LuneraBuilding;
+import com.lunera.dto.LuneraCustomer;
 import com.lunera.dto.ServiceNowData;
 
 @Service
@@ -56,7 +60,6 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 		return values;
 	}
 
-	@Override
 	public void closeResources(ResultSet rs, Statement stmt) {
 		try {
 			if (rs != null)
@@ -86,7 +89,7 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 			resultSet.next();
 			int rows = resultSet.getInt(1);
 			if (rows > 0) {
-				logger.info("This Service Now Request is already updated into database.");
+				logger.info("This Service Now Request is already updated into database or matching entry does not exist");
 				return true;
 			}
 		} catch (SQLException e) {
@@ -131,5 +134,58 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 			}
 		}
 		return false;
+	}
+
+	public List<LuneraCustomer> getAllCustomer() {
+		Statement stmt = null;
+		ResultSet resultSet = null;
+		List<LuneraCustomer> customerList = new ArrayList<LuneraCustomer>();
+		try {
+			stmt = dbConnection.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			String sql = "select Id,Name from Customers";
+			logger.info("Executing query " + sql);
+			resultSet = stmt.executeQuery(sql);
+			while (resultSet.next()) {
+				LuneraCustomer customer = new LuneraCustomer();
+				customer.setId(resultSet.getString("Id"));
+				customer.setName(resultSet.getString("Name"));
+				customerList.add(customer);
+			}
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			closeResources(resultSet, stmt);
+		}
+		return customerList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.lunera.db.dao.ServiceNowDAO#getAllBuilding(java.lang.String)
+	 */
+	public List<LuneraBuilding> getAllBuilding(String customerId) {
+		Statement stmt = null;
+		ResultSet resultSet = null;
+		List<LuneraBuilding> buildingList = new ArrayList<LuneraBuilding>();
+		try {
+			stmt = dbConnection.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			String sql = "select Id,Name from Buildings where Customer_Id ='" + customerId + "'";
+			logger.info("Executing query " + sql);
+			resultSet = stmt.executeQuery(sql);
+			while (resultSet.next()) {
+				LuneraBuilding building = new LuneraBuilding();
+				building.setId(resultSet.getString("Id"));
+				building.setName(resultSet.getString("Name"));
+				buildingList.add(building);
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			closeResources(resultSet, stmt);
+		}
+		return buildingList;
 	}
 }
