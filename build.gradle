@@ -39,6 +39,6 @@ dependencies {
 	 compile group: 'com.datastax.cassandra', name: 'cassandra-driver-core', version: '3.1.0'
 	 // https://mvnrepository.com/artifact/org.springframework/spring-jdbc
 	compile(group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.1.0.jre8')
-	
 	compile "joda-time:joda-time:2.2"
+	compile 'com.hazelcast:hazelcast:3.10'
 }
