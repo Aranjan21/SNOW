@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import com.lunera.config.RdsConnection;
 import com.lunera.dto.LuneraBuilding;
 import com.lunera.dto.LuneraCustomer;
+import com.lunera.dto.LuneraFloors;
+import com.lunera.dto.LuneraTenants;
 import com.lunera.dto.ServiceNowData;
 
 @Service
@@ -27,6 +29,13 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 	@Autowired
 	private RdsConnection dbConnection;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.lunera.db.dao.ServiceNowDAO#findContainerIdsbyLampSerialNumber(java.lang.
+	 * String)
+	 */
 	@Override
 	public Map<String, String> findContainerIdsbyLampSerialNumber(String serialNumber) {
 		Map<String, String> values = new HashMap<>();
@@ -72,6 +81,13 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.lunera.db.dao.ServiceNowDAO#isServiceCountAlreadyUpdated(com.lunera.dto.
+	 * ServiceNowData)
+	 */
 	@Override
 	public boolean isServiceCountAlreadyUpdated(ServiceNowData data) {
 		Statement stmt = null;
@@ -89,7 +105,8 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 			resultSet.next();
 			int rows = resultSet.getInt(1);
 			if (rows > 0) {
-				logger.info("This Service Now Request is already updated into database or matching entry does not exist");
+				logger.info(
+						"This Service Now Request is already updated into database or matching entry does not exist");
 				return true;
 			}
 		} catch (SQLException e) {
@@ -101,6 +118,12 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.lunera.db.dao.ServiceNowDAO#updateServiceNowCount(com.lunera.dto.
+	 * ServiceNowData)
+	 */
 	@Override
 	public boolean updateServiceNowCount(ServiceNowData data) {
 		PreparedStatement ps = null;
@@ -136,6 +159,12 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.lunera.db.dao.ServiceNowDAO#getAllCustomer()
+	 */
+	@Override
 	public List<LuneraCustomer> getAllCustomer() {
 		Statement stmt = null;
 		ResultSet resultSet = null;
@@ -163,8 +192,10 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.lunera.db.dao.ServiceNowDAO#getAllBuilding(java.lang.String)
 	 */
+	@Override
 	public List<LuneraBuilding> getAllBuilding(String customerId) {
 		Statement stmt = null;
 		ResultSet resultSet = null;
@@ -187,5 +218,100 @@ public class ServiceNowDAOImpl implements ServiceNowDAO {
 			closeResources(resultSet, stmt);
 		}
 		return buildingList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.lunera.db.dao.ServiceNowDAO#getAllFloors(java.lang.String)
+	 */
+	@Override
+	public List<LuneraFloors> getAllFloors(String buildingId) {
+		Statement stmt = null;
+		ResultSet resultSet = null;
+		List<LuneraFloors> floorList = new ArrayList<LuneraFloors>();
+		try {
+			stmt = dbConnection.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			String sql = "select Id,Name from Floors where Building_Id ='" + buildingId + "'";
+			logger.info("Executing query " + sql);
+			resultSet = stmt.executeQuery(sql);
+			while (resultSet.next()) {
+				LuneraFloors floors = new LuneraFloors();
+				floors.setId(resultSet.getString("Id"));
+				floors.setName(resultSet.getString("Name"));
+				floorList.add(floors);
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			closeResources(resultSet, stmt);
+		}
+		return floorList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.lunera.db.dao.ServiceNowDAO#getAllTenants(java.lang.String)
+	 */
+	@Override
+	public List<LuneraTenants> getAllTenants(String floorId) {
+		Statement stmt = null;
+		ResultSet resultSet = null;
+		List<LuneraTenants> tenantList = new ArrayList<LuneraTenants>();
+		try {
+			stmt = dbConnection.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			String sql = "select Id,Name from Tenants where Floor_Id ='" + floorId + "'";
+			logger.info("Executing query " + sql);
+			resultSet = stmt.executeQuery(sql);
+			while (resultSet.next()) {
+				LuneraTenants tenant = new LuneraTenants();
+				tenant.setId(resultSet.getString("Id"));
+				tenant.setName(resultSet.getString("Name"));
+				tenantList.add(tenant);
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			closeResources(resultSet, stmt);
+		}
+		return tenantList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.lunera.db.dao.ServiceNowDAO#resetCount(java.lang.String)
+	 */
+	@Override
+	public boolean resetCount(String tenantId) {
+		PreparedStatement ps = null;
+		try {
+			String sql = "UPDATE ServiceNowButtons SET PressedCount = 0 WHERE Tenant_Id = ? ";
+			ps = dbConnection.getConnection().prepareStatement(sql);
+			ps.setString(1, tenantId);
+
+			logger.info("Executing query " + sql);
+			int updateStatus = ps.executeUpdate();
+			if (updateStatus > 0) {
+				logger.info("ServiceNow Button Count has been reset :" + updateStatus);
+				return true;
+			}
+			logger.info("Nothing to reset in service now button with this tenantId:" + tenantId);
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		} finally {
+			if (ps != null) {
+				try {
+					if (ps != null)
+						ps.close();
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
+			}
+		}
+		return false;
 	}
 }

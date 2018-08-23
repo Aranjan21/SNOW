@@ -48,7 +48,7 @@ public class SchedulerService {
 				semaphore.release();
 			}
 		} else {
-			logger.info("Could not acquire semaphore");
+			logger.info("Could not acquire semaphore for reducer");
 		}
 
 		logger.info("SchedulerServiceExecution:Service Now Reducer completed: " + new Date());

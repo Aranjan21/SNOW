@@ -17,15 +17,23 @@ public class HazelcastConfig {
 
 	@Bean
 	public HazelcastInstance initializeHazelInstance() {
-		SemaphoreConfig semaphoreConfig = new SemaphoreConfig();
-		semaphoreConfig.setName("reducer");
-		semaphoreConfig.setInitialPermits(1);
-
+		
+		// Reducer - Semaphore
+		SemaphoreConfig semaphoreConfig1 = new SemaphoreConfig();
+		semaphoreConfig1.setName("reducer");
+		semaphoreConfig1.setInitialPermits(1);
+		
+		// RDS count reset for snapshot - Semaphore
+		SemaphoreConfig semaphoreConfig2 = new SemaphoreConfig();
+		semaphoreConfig2.setName("countReset");
+		semaphoreConfig2.setInitialPermits(1);
+		
 		Config config = new Config();
-		config.addSemaphoreConfig(semaphoreConfig);
+		config.addSemaphoreConfig(semaphoreConfig1);
+		config.addSemaphoreConfig(semaphoreConfig2);
 
 		TcpIpConfig tcpIpConfig = new TcpIpConfig();
-		tcpIpConfig.addMember("servicenow01.dev.lunera.com"); 
+		tcpIpConfig.addMember("servicenow01.dev.lunera.com");
 		tcpIpConfig.addMember("servicenow02.dev.lunera.com");
 		tcpIpConfig.setEnabled(true);
 		MulticastConfig multicastConfig = new MulticastConfig();
