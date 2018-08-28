@@ -11,5 +11,4 @@ public class RawDataRequest {
 	private String buildingId;
 	private String from;
 	private String to;
-	private String period;
 }

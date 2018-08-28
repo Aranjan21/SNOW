@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -19,27 +18,22 @@ import org.springframework.web.client.RestTemplate;
 
 import com.lunera.util.enums.ApplicationConstants;
 
-
-
 /**
+ * This is main class which starts Service Now API server.
  * 
  * @author gautam.vijay added on 8 Aug 2018
  */
 @EnableAsync
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.lunera.db.rds", "com.lunera.service", "com.lunera.controller",
-		"com.lunera.db.config", "com.lunera.util.cache" })
+@ComponentScan(basePackages = { "com.lunera.db", "com.lunera.service", "com.lunera.controller", "com.lunera.config",
+		"com.lunera.util.cache","com.lunera.util" })
 public class Application {
 
 	private final static Logger logger = LogManager.getLogger(Application.class);
 
 	public static void main(String[] args) {
 		loadLuneraPropertyFile();
-		// SpringApplication.run(Application.class, args);
 		SpringApplication application = new SpringApplication(Application.class);
-		HashMap<String, Object> defaultProperties = new HashMap<>();
-		defaultProperties.put("server.port", 6001);
-		application.setDefaultProperties(defaultProperties);
 		application.run(args);
 	}
 
@@ -48,6 +42,11 @@ public class Application {
 		return new RestTemplate();
 	}
 
+	/**
+	 * This method copy the lunera.properties file from /luner/etc to execution path
+	 * with the name of application.properties. This property is automatically
+	 * loaded into spring project.
+	 */
 	public static void loadLuneraPropertyFile() {
 		String propConfig = System.getProperty(ApplicationConstants.ENVIRONMENT_VARIABLE);
 		String configPathStr = (propConfig != null && !propConfig.trim().isEmpty()) ? propConfig

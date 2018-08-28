@@ -13,15 +13,15 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-
+apply plugin: 'distribution'
 group = 'com.lunera'
 version = '0.0.1'
-description = 'Service Now API Server'
 sourceCompatibility = 1.8
-
+mainClassName = 'com.lunera.Application'
 repositories {
 	mavenCentral()
 }
@@ -38,8 +38,7 @@ dependencies {
 	 compile 'org.projectlombok:lombok:1.16.4'	 
 	 compile group: 'com.datastax.cassandra', name: 'cassandra-driver-core', version: '3.1.0'
 	 // https://mvnrepository.com/artifact/org.springframework/spring-jdbc
-    compile group: 'org.springframework', name: 'spring-jdbc', version: '5.0.8.RELEASE'
-    // https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc
-	testCompile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.1.0.jre7'
+	compile(group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.1.0.jre8')
 	compile "joda-time:joda-time:2.2"
+	compile 'com.hazelcast:hazelcast:3.10'
 }

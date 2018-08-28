@@ -11,5 +11,5 @@ import lombok.Data;
  */
 @Data
 public class RawDataResponse {
-	private List<RawData> rawData = new ArrayList<RawData>();
+	private List<ServiceNowRawData> rawData = new ArrayList<ServiceNowRawData>();
 }

@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
-import com.lunera.db.rds.dao.ServiceNowDAO;
+import com.lunera.db.dao.CassandraDAO;
+import com.lunera.db.dao.ServiceNowDAO;
 import com.lunera.dto.ServiceNowData;
+import com.lunera.response.ServiceNowResponse;
 import com.lunera.util.cache.CacheKey;
 import com.lunera.util.cache.CacheValue;
 import com.lunera.util.cache.ServiceNowCache;
@@ -34,8 +36,11 @@ public class ServiceNowImpl implements ServiceNow {
 	@Autowired
 	private ServiceNowCache serviceNowCache;
 
+	@Autowired
+	private CassandraDAO cassandraDAO;
+
 	@Override
-	public void processServiceNowRequest(MultiValueMap<String, String> requestData) {
+	public ServiceNowResponse processServiceNowRequest(MultiValueMap<String, String> requestData) {
 		ServiceNowData data = buildServiceNowData(requestData);
 		CacheKey cacheKey = buildCacheKey(data);
 		CacheValue cacheValue = serviceNowCache.get(cacheKey);
@@ -45,6 +50,7 @@ public class ServiceNowImpl implements ServiceNow {
 			cacheValue.setTimeStamp(publishTime);
 			serviceNowCache.put(cacheKey, cacheValue);
 			updateServiceNowCount(data);
+
 		} else if (cacheValue.getTimeStamp()
 				.isBefore(DateTime.now().minusMinutes(ApplicationConstants.MAX_DUPLICATE_MSG_INTERVAL_MINUTES))) {
 			logger.info("Last Published Time :" + cacheValue.getTimeStamp() + " Current Time: " + DateTime.now());
@@ -55,15 +61,23 @@ public class ServiceNowImpl implements ServiceNow {
 			logger.info("Last Published Time :" + cacheValue.getTimeStamp() + " Current Time: " + DateTime.now());
 			logger.info("Duplicate serviceNow event received" + cacheKey);
 		}
-		logger.info("Service now data with complete details" + data);
+		logger.info("Request completed from Lamp [/particlehook/luneraapp] : " + data);
+		return buildServiceNowData(data.getId());
+	}
+
+	private ServiceNowResponse buildServiceNowData(String requestId) {
+		ServiceNowResponse response = new ServiceNowResponse();
+		response.setId(requestId);
+		response.setSuccess(true);
+		return response;
 	}
 
 	private void updateServiceNowCount(ServiceNowData data) {
 		// First Check that data already updated or not(tenantId, transID,buttonId,type)
 		// If already updated then ignore else update count
-		if (!rds.isServiceCountAlreadyUpdated(data)) {
-			rds.updateServiceNowCount(data);
-			// Need to update cassandra raw table
+		// if (!rds.isServiceCountAlreadyUpdated(data)) {
+		if (rds.updateServiceNowCount(data)) {
+			cassandraDAO.saveServiceNowData(data);
 		}
 	}
 
